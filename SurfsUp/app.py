@@ -49,7 +49,7 @@ def homepage():
 
 
 
-
+#set up app pages
 @app.route("/api/v1.0/stations")
 def stations():
     # Create our session (link) from Python to the DB
@@ -65,7 +65,7 @@ def stations():
 
 
 
-
+#set up app page
 @app.route("/api/v1.0/precipitation")
 
 def precipitation():
@@ -88,24 +88,24 @@ def precipitation():
     return jsonify(prcp_dict)
 
 
-
+#set up app page
 @app.route("/api/v1.0/tobs")
 def tobs():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-# Determine the most active station
+# find most active station
     most_active_station = session.query(measurement.station)\
         .group_by(measurement.station)\
         .order_by(func.count(measurement.station).desc())\
         .first()[0]
     
-# Determine the date range for the previous year
+# find date range for the previous year
     latest_date = session.query(func.max(measurement.date)).scalar()
     latest_date = dt.datetime.strptime(latest_date, '%Y-%m-%d')
     year_ago = latest_date - dt.timedelta(days=365)
     
-# Query temperature observations for the most active station within the previous year
+# temp observations for the most active station in the previous year
     results = session.query(measurement.date, measurement.tobs)\
         .filter(measurement.station == most_active_station)\
         .filter(measurement.date >= year_ago)\
@@ -131,7 +131,7 @@ def temp_stats_start(start):
 # Convert start date to datetime object
     start_date = dt.datetime.strptime(start, '%Y-%m-%d')
     
-# Query temperature statistics for dates greater than or equal to start date
+# temp stats for dates greater than or equal to start date
     results = session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs))\
         .filter(measurement.date >= start_date)\
         .all()
@@ -148,7 +148,7 @@ def temp_stats_start(start):
 
 
 
-
+#app page
 @app.route('/api/v1.0/<start>/<end>')
 def temp_stats_start_end(start, end):
 # Create a session
@@ -158,7 +158,7 @@ def temp_stats_start_end(start, end):
     start_date = dt.datetime.strptime(start, '%Y-%m-%d')
     end_date = dt.datetime.strptime(end, '%Y-%m-%d')
     
-# Query temperature statistics for dates between start and end dates
+# temperature stats for dates between start and end dates
     results = session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(Measurement.tobs))\
         .filter(measurement.date >= start_date)\
         .filter(measurement.date <= end_date)\
