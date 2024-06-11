@@ -159,7 +159,7 @@ def temp_stats_start_end(start, end):
     end_date = dt.datetime.strptime(end, '%Y-%m-%d')
     
 # temperature stats for dates between start and end dates
-    results = session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(Measurement.tobs))\
+    results = session.query(func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs))\
         .filter(measurement.date >= start_date)\
         .filter(measurement.date <= end_date)\
         .all()
